@@ -65,6 +65,8 @@ Parameters where change impacted a lot the following are for mechanical lidar on
     double delta_width_circles = 0.5; // Distance from circle center on width direction
     double delta_height_circles = 0.4; // Distance from circle center on height direction
     double circle_radius = 0.12; // Circle radius
+	std::vector<double> crop_min_xyz = {-1.6, 1.0, -1.0}; //Min value of xyz to crop the computation on lidar data
+    std::vector<double> crop_max_xyz = {0.5, 3.5, 1.0}; //Max value of xyz to crop the computation on lidar data
     double plane_dist_threshold = 0.05; // distance between one point to another within a plane
 One param in the lidar_detect.hpp, in line 444.
  `float tolerance = 0.005; // this parameter says how much the impact of the circle which will be checked. Try and see a sweet spot where this should be. Changes for each lidar.`
@@ -76,7 +78,7 @@ One param in the lidar_detect.hpp, in line 444.
     pcl_veiwer file_name1.pcd file_name2.pcd // this will visualize multiple file with different color in single window.
 
  2. Inside PCD viewer, press 1 to change color, if the output is not clearly visible. Press + to increase the point thickness. Use mouse for pan,rotate and tilt.
- 3. If the `plane_cloud_0.pcd`file doesnt look like the following you need to check if any issues is there in the lidar data.
+ 3. If the `plane_cloud_0.pcd`file doesnt look like the following you need to check if any issues is there in the lidar data. Also please check wheter the crop_min_xyz, crop_max_xyz are given properly with a focus board is visible there. (Will add a script for these visualisation soon).
  ![Image showing the plane_cloud_0.pcd](images/plane_cloud.png)
  4. In the `edge_cloud_0.pcd` file, you should see the output as follows.
 ![Image showing the edge_cloud_0.pcd](images/edge_cloud.png)
