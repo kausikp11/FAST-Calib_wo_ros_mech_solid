@@ -86,5 +86,5 @@ def npz_to_txt(npz_path, txt_path):
 if __name__ =='__main__':
 	#os.mkdir(output_dir / f"test_fast_calib")
 	for npz_path in npz_files:
-		out_path = output_dir / f"test_fast_calib" /f"{npz_path.stem}.pcd"
-		npz_to_pcd(npz_path,out_path)
+		out_path = output_dir / f"test_fast_calib" /f"{npz_path.stem}.txt"
+		npz_to_txt(npz_path,out_path)
