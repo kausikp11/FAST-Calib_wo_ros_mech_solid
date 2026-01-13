@@ -52,11 +52,13 @@ Clone the Project
 The following is for the code committed by me. If you have made some additional input parameter please use the same.
 Note:- you need to give the camera intrinsic as **yaml** not *~~json~~*
 **Usage**
-
+Normal Usage:-
     ./my_fast_calib -cam_intrinsic_file /path/to/data/camera_pinhole.yaml --data_dir /path/to/data --output_dir /path/to/output
+Parameter Adjustment:-
+    ./my_fast_calib -cam_intrinsic_file /path/to/data/camera_pinhole.yaml --data_dir /path/to/data --output_dir /path/to/output --marker_size 0.2 --delta_width_qr_center 0.55 --delta_height_qr_center 0.55 --delta_width_circles 0.5 --delta_height_circles 0.4 --crop_min_xyz "-1.6,1.0,-1.0: --crop_max_xyz "0.5,3.5,1.0" --plane_dist_threshold 0.05 --circle_tolerance 0.005
 
 # Params which can be adjusted
-All the params on the struct.hpp
+All the params on the struct.hpp. These parameters can be updated through the command line as shown above except the TARGET_NUM_CIRCLES and GEOMETRY_TOLERANCE.
 Parameters where change impacted a lot the following are for mechanical lidar only:-
 
     #define TARGET_NUM_CIRCLES 4 // number of circles
@@ -69,11 +71,12 @@ Parameters where change impacted a lot the following are for mechanical lidar on
     double delta_width_circles = 0.5; // Distance from circle center on width direction
     double delta_height_circles = 0.4; // Distance from circle center on height direction
     double circle_radius = 0.12; // Circle radius
-	std::vector<double> crop_min_xyz = {-1.6, 1.0, -1.0}; //Min value of xyz to crop the computation on lidar data
+    std::vector<double> crop_min_xyz = {-1.6, 1.0, -1.0}; //Min value of xyz to crop the computation on lidar data
     std::vector<double> crop_max_xyz = {0.5, 3.5, 1.0}; //Max value of xyz to crop the computation on lidar data
     double plane_dist_threshold = 0.05; // distance between one point to another within a plane
-One param in the lidar_detect.hpp, in line 444.
- `float tolerance = 0.005; // this parameter says how much the impact of the circle which will be checked. Try and see a sweet spot where this should be. Changes for each lidar.`
+    float circle_tolerance = 0.005; // this parameter says how much the impact of the circle which will be checked. Try and see a sweet spot where this should be. Changes for each lidar.
+    ...
+    }
 
 # Some common advice
 
