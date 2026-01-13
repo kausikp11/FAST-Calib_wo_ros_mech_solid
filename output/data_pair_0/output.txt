@@ -1,0 +1,63 @@
+I0109 10:07:07.602358  9713 main.cpp:46] Begin program
+=== Program Configuration ===
+Camera intrinsic file: ../data/camera_pinhole.yaml
+Data directory: ../data
+Output directory: ../output
+=============================
+Camera Model: Pinhole
+Image Width: 3840
+Image Height: 2160
+Focal Length X: 1106.46
+Focal Length Y: 1077.77
+Principal Point X: 1080
+Principal Point Y: 1920
+Distortion Coefficient k1: 0
+Distortion Coefficient k2: 0
+Distortion Coefficient p1: 0
+Distortion Coefficient p2: 0
+Warning: No matching BAG file found for ../data/cam_s1749051271255.png
+Found 1 .bag and .png file pairs in ../data
+Loaded image: ../data/cam_s1749051271255.png with size 2160x3840 and point cloud with 132574 points.
+I0109 10:07:07.840797  9713 lidar_detect.hpp:79] LidarDetect initialized, x_min: -1.6, x_max: 0.5, y_min: 1, y_max: 3.5, z_min: -1, z_max: 1, circle_radius: 0.12, voxel_down_size: 0.005
+I0109 10:07:07.840843  9713 lidar_detect.hpp:86] Plane fitting params, plane_dist_threshold: 0.05
+I0109 10:07:07.840852  9713 lidar_detect.hpp:92] Target params, target_normal_radius: 0.1, target_boundary_radius: 0.1, target_boundary_angle_thres: 1.5708
+I0109 10:07:07.840965  9713 qr_detect.hpp:53] QR detect initialized with parameters: 
+marker_size: 0.2
+delta_width_qr_center: 0.55
+delta_height_qr_center: 0.55
+delta_width_circles: 0.5
+delta_height_circles: 0.4
+min_detected_markers: 3
+I0109 10:07:07.841096  9713 main.cpp:91] Processing data pair 1 / 1
+I0109 10:07:07.842264  9713 lidar_detect.hpp:320] [mech] Depth filtered cloud size: 7888
+I0109 10:07:07.843608  9713 lidar_detect.hpp:341] [mech] Plane cloud size: 5684
+I0109 10:07:07.843729  9713 lidar_detect.hpp:407] [mech] Extracted 180 edge points (neighbor distance).
+I0109 10:07:07.843743  9713 lidar_detect.hpp:441] [mech] Start circle detection, initial cloud size = 180
+I0109 10:07:07.843751  9713 lidar_detect.hpp:462] [mech] RANSAC on cloud of size 180
+I0109 10:07:07.844019  9713 lidar_detect.hpp:466] [mech] circle r = 0.119857, inliers = 24
+I0109 10:07:07.844033  9713 lidar_detect.hpp:462] [mech] RANSAC on cloud of size 156
+I0109 10:07:07.844148  9713 lidar_detect.hpp:466] [mech] circle r = 0.123096, inliers = 24
+I0109 10:07:07.844158  9713 lidar_detect.hpp:462] [mech] RANSAC on cloud of size 132
+I0109 10:07:07.844231  9713 lidar_detect.hpp:466] [mech] circle r = 0.118697, inliers = 24
+I0109 10:07:07.844239  9713 lidar_detect.hpp:462] [mech] RANSAC on cloud of size 108
+I0109 10:07:07.844305  9713 lidar_detect.hpp:466] [mech] circle r = 0.120224, inliers = 21
+I0109 10:07:07.844312  9713 lidar_detect.hpp:462] [mech] RANSAC on cloud of size 87
+I0109 10:07:07.844498  9713 lidar_detect.hpp:466] [mech] circle r = 0.119016, inliers = 11
+I0109 10:07:07.844506  9713 lidar_detect.hpp:484] [mech] Circle inliers too few (11), stop.
+I0109 10:07:07.844511  9713 lidar_detect.hpp:503] [mech] Detected 4 raw circle candidates before geometry filter.
+I0109 10:07:07.844522  9713 struct.hpp:101] 4 centers found. Iterating over 1 possible sets of candidates
+I0109 10:07:07.845094  9713 main.cpp:104] center_cloud_:
+I0109 10:07:07.845178  9713 main.cpp:106] center_cloud_:
+I0109 10:07:07.851316  9713 main.cpp:108] center_cloud_:
+I0109 10:07:07.851397  9713 main.cpp:110] center_cloud_:
+I0109 10:07:07.851405  9713 main.cpp:118] Lidar Detection completed 
+I0109 10:07:07.907634  9713 qr_detect.hpp:205] detect_qr: 0.129145, 0.772588, 3.02413
+I0109 10:07:07.907757  9713 struct.hpp:101] 4 centers found. Iterating over 1 possible sets of candidates
+I0109 10:07:08.088079  9713 main.cpp:125] QR Detection completed 
+ -0.97269 -0.230385 0.0282209  0.132625
+0.0310305 -0.249568  -0.96786   1.45787
+ 0.230024 -0.940552  0.249902   6.31497
+I0109 10:07:08.088421  9713 main.cpp:149] Calibration result RMSE: 0.00735337
+[pcl::VoxelGrid::applyFilter] Leaf size is too small for the input dataset. Integer indices would overflow.
+I0109 10:07:08.376725  9713 main.cpp:160] Processed data pair 1 / 1 successfully
+        0         0         0         1Processing completed!
