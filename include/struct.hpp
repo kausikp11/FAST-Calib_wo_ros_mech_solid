@@ -75,6 +75,8 @@ struct Parameters {
     std::vector<double> crop_max_xyz = {0.5, 3.5, 1.0};
     double voxel_downsample_size = 0.005;
     double plane_dist_threshold = 0.05;
+    double circle_tolerance = 0.005; // for circle size
+    
     // 标定板平面点云法向量估计搜索半径
     double target_normal_radius = 0.1;
     // 标定板平面点云边界检测搜索半径

@@ -40,7 +40,7 @@ private:
   double target_boundary_angle_thres_;
   double cluster_tolerance_;
   int min_cluster_size_, max_cluster_size_;
-  double delta_width_circles_, delta_height_circles_;
+  double delta_width_circles_, delta_height_circles_,circle_tolerance_;
 
   // 存储中间结果的点云
   PointCloudPtr filtered_cloud_;
@@ -75,6 +75,7 @@ public:
     max_cluster_size_ = params.max_cluster_size;
     delta_width_circles_ = params.delta_width_circles;
     delta_height_circles_ = params.delta_height_circles;
+    circle_tolerance_ = params.circle_tolerance;
 
     LOG(INFO) << "LidarDetect initialized, x_min: " << x_min_
               << ", x_max: " << x_max_ << ", y_min: " << y_min_
@@ -441,15 +442,14 @@ public:
     LOG(INFO) << "[mech] Start circle detection, initial cloud size = "
               << xy_cloud->size();
 
-    float tolerance = 0.005; //0.008
     pcl::SACSegmentation<PointT> circle_segmentation;
     circle_segmentation.setModelType(pcl::SACMODEL_CIRCLE2D);
     circle_segmentation.setMethodType(pcl::SAC_RANSAC);
-    circle_segmentation.setDistanceThreshold(0.02); //0.02
+    circle_segmentation.setDistanceThreshold(plane_dist_threshold_); 
     circle_segmentation.setOptimizeCoefficients(true);
     circle_segmentation.setMaxIterations(5000);
-    circle_segmentation.setRadiusLimits(circle_radius_ - tolerance,
-                                        circle_radius_ + tolerance);
+    circle_segmentation.setRadiusLimits(circle_radius_ - circle_tolerance_,
+                                        circle_radius_ + circle_tolerance_);
 
     pcl::ModelCoefficients::Ptr coefficients(new pcl::ModelCoefficients);
     pcl::PointIndices::Ptr inliers(new pcl::PointIndices);
@@ -471,8 +471,8 @@ public:
         LOG(INFO) << "[mech] No more circles can be found, stop.";
         break;
       }
-      if (coefficients->values[2] < circle_radius_ - tolerance ||
-    coefficients->values[2] > circle_radius_ + tolerance)
+      if (coefficients->values[2] < circle_radius_ - circle_tolerance_ ||
+    coefficients->values[2] > circle_radius_ + circle_tolerance_)
 {
     // Reject weak / partial circle
     LOG(INFO) << "[mech] coeff";
@@ -503,105 +503,105 @@ public:
     LOG(INFO) << "[mech] Detected " << center_z0_cloud_->size()
               << " raw circle candidates before geometry filter.";
 
-    // 6. Geometric consistency check (select exactly 4 circles)
-    std::vector<std::vector<int>> groups;
-    comb(center_z0_cloud_->size(), TARGET_NUM_CIRCLES, groups);
+    // // 6. Geometric consistency check (select exactly 4 circles)
+    // std::vector<std::vector<int>> groups;
+    // comb(center_z0_cloud_->size(), TARGET_NUM_CIRCLES, groups);
 
-    std::vector<double> groups_scores(groups.size(), -1.0);
+    // std::vector<double> groups_scores(groups.size(), -1.0);
 
-    for (size_t i = 0; i < groups.size(); ++i)
-    {
-      std::vector<PointT> candidates;
-      candidates.reserve(TARGET_NUM_CIRCLES);
+    // for (size_t i = 0; i < groups.size(); ++i)
+    // {
+    //   std::vector<PointT> candidates;
+    //   candidates.reserve(TARGET_NUM_CIRCLES);
 
-      for (int idx : groups[i])
-      {
-        const auto &cpt = center_z0_cloud_->points[idx];
-        PointT p;
-        p.x = cpt.x;
-        p.y = cpt.y;
-        p.z = cpt.z;
-        p.ring = 0;      // safe default
-        p.intensity = 0; // safe default
-        candidates.push_back(p);
-      }
+    //   for (int idx : groups[i])
+    //   {
+    //     const auto &cpt = center_z0_cloud_->points[idx];
+    //     PointT p;
+    //     p.x = cpt.x;
+    //     p.y = cpt.y;
+    //     p.z = cpt.z;
+    //     p.ring = 0;      // safe default
+    //     p.intensity = 0; // safe default
+    //     candidates.push_back(p);
+    //   }
 
-      Square square_candidate(
-          candidates,
-          delta_width_circles_,
-          delta_height_circles_);
+    //   Square square_candidate(
+    //       candidates,
+    //       delta_width_circles_,
+    //       delta_height_circles_);
 
-      groups_scores[i] = square_candidate.is_valid() ? 1.0 : -1.0;
-    }
+    //   groups_scores[i] = square_candidate.is_valid() ? 1.0 : -1.0;
+    // }
 
-    // Select best valid candidate
-    int best_candidate_idx = -1;
-    double best_candidate_score = -1.0;
+    // // Select best valid candidate
+    // int best_candidate_idx = -1;
+    // double best_candidate_score = -1.0;
 
-    for (size_t i = 0; i < groups_scores.size(); ++i)
-    {
-      if (best_candidate_score == 1.0 && groups_scores[i] == 1.0)
-      {
-        LOG(ERROR)
-            << "[mech] Multiple candidate groups match target geometry. "
-            << "Check thresholds.";
-        return;
-      }
-      if (groups_scores[i] > best_candidate_score)
-      {
-        best_candidate_score = groups_scores[i];
-        best_candidate_idx = static_cast<int>(i);
-      }
-    }
+    // for (size_t i = 0; i < groups_scores.size(); ++i)
+    // {
+    //   if (best_candidate_score == 1.0 && groups_scores[i] == 1.0)
+    //   {
+    //     LOG(ERROR)
+    //         << "[mech] Multiple candidate groups match target geometry. "
+    //         << "Check thresholds.";
+    //     return;
+    //   }
+    //   if (groups_scores[i] > best_candidate_score)
+    //   {
+    //     best_candidate_score = groups_scores[i];
+    //     best_candidate_idx = static_cast<int>(i);
+    //   }
+    // }
 
-    if (best_candidate_idx == -1)
-    {
-      LOG(WARNING)
-          << "[mech] No circle group matches target geometry.";
-      return;
-    }
+    // if (best_candidate_idx == -1)
+    // {
+    //   LOG(WARNING)
+    //       << "[mech] No circle group matches target geometry.";
+    //   return;
+    // }
 
-    // 7. Transform selected 4 centers back to original LiDAR frame
-    Eigen::Matrix3d R_inv = R_align.inverse();
-    center_cloud->clear();
+    // // 7. Transform selected 4 centers back to original LiDAR frame
+    // Eigen::Matrix3d R_inv = R_align.inverse();
+    // center_cloud->clear();
 
-    for (int idx : groups[best_candidate_idx])
-    {
-      const auto &cpt = center_z0_cloud_->points[idx];
+    // for (int idx : groups[best_candidate_idx])
+    // {
+    //   const auto &cpt = center_z0_cloud_->points[idx];
 
-      Eigen::Vector3d aligned_point(
-          cpt.x,
-          cpt.y,
-          cpt.z + average_z);
+    //   Eigen::Vector3d aligned_point(
+    //       cpt.x,
+    //       cpt.y,
+    //       cpt.z + average_z);
 
-      Eigen::Vector3d original_point = R_inv * aligned_point;
+    //   Eigen::Vector3d original_point = R_inv * aligned_point;
 
-      PointT center_point_origin;
-      center_point_origin.x = original_point.x();
-      center_point_origin.y = original_point.y();
-      center_point_origin.z = original_point.z();
-      center_cloud->push_back(center_point_origin);
-    }
+    //   PointT center_point_origin;
+    //   center_point_origin.x = original_point.x();
+    //   center_point_origin.y = original_point.y();
+    //   center_point_origin.z = original_point.z();
+    //   center_cloud->push_back(center_point_origin);
+    // }
 
-    center_cloud->width = 1;
-    center_cloud->height = center_cloud->points.size();
+    // center_cloud->width = 1;
+    // center_cloud->height = center_cloud->points.size();
 
-  //   // 6. Transform selected centers back to original coordinates
-  // Eigen::Matrix3d R_inv = R_align.inverse();
-  // center_cloud->clear();
-  // for (const auto& cpt : *center_z0_cloud_) {
-  //   Eigen::Vector3d aligned_point(cpt.x, cpt.y, cpt.z + average_z);
-  //   Eigen::Vector3d original_point = R_inv * aligned_point;
+    // 6. Transform selected centers back to original coordinates
+  Eigen::Matrix3d R_inv = R_align.inverse();
+  center_cloud->clear();
+  for (const auto& cpt : *center_z0_cloud_) {
+    Eigen::Vector3d aligned_point(cpt.x, cpt.y, cpt.z + average_z);
+    Eigen::Vector3d original_point = R_inv * aligned_point;
 
-  //   PointT center_point_origin;
-  //   center_point_origin.x = original_point.x();
-  //   center_point_origin.y = original_point.y();
-  //   center_point_origin.z = original_point.z();
-  //   center_cloud->push_back(center_point_origin);
-  // }
+    PointT center_point_origin;
+    center_point_origin.x = original_point.x();
+    center_point_origin.y = original_point.y();
+    center_point_origin.z = original_point.z();
+    center_cloud->push_back(center_point_origin);
+  }
 
-  // center_cloud->width = 1;
-  // center_cloud->height = center_cloud->points.size();
+  center_cloud->width = 1;
+  center_cloud->height = center_cloud->points.size();
   }
 
   // 获取中间结果的点云
