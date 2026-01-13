@@ -52,10 +52,14 @@ Clone the Project
 The following is for the code committed by me. If you have made some additional input parameter please use the same.
 Note:- you need to give the camera intrinsic as **yaml** not *~~json~~*
 **Usage**
+
 Normal Usage:-
-    ./my_fast_calib -cam_intrinsic_file /path/to/data/camera_pinhole.yaml --data_dir /path/to/data --output_dir /path/to/output
+
+	./my_fast_calib -cam_intrinsic_file /path/to/data/camera_pinhole.yaml --data_dir /path/to/data --output_dir /path/to/output
+	
 Parameter Adjustment:-
-    ./my_fast_calib -cam_intrinsic_file /path/to/data/camera_pinhole.yaml --data_dir /path/to/data --output_dir /path/to/output --marker_size 0.2 --delta_width_qr_center 0.55 --delta_height_qr_center 0.55 --delta_width_circles 0.5 --delta_height_circles 0.4 --crop_min_xyz "-1.6,1.0,-1.0: --crop_max_xyz "0.5,3.5,1.0" --plane_dist_threshold 0.05 --circle_tolerance 0.005
+
+	./my_fast_calib -cam_intrinsic_file /path/to/data/camera_pinhole.yaml --data_dir /path/to/data --output_dir /path/to/output --marker_size 0.2 --delta_width_qr_center 0.55 --delta_height_qr_center 0.55 --delta_width_circles 0.5 --delta_height_circles 0.4 --crop_min_xyz "-1.6,1.0,-1.0: --crop_max_xyz "0.5,3.5,1.0" --plane_dist_threshold 0.05 --circle_tolerance 0.005
 
 # Params which can be adjusted
 All the params on the struct.hpp. These parameters can be updated through the command line as shown above except the TARGET_NUM_CIRCLES and GEOMETRY_TOLERANCE.
